@@ -124,10 +124,3 @@ Finally, if you've read this far, don't forget to give this repo a ⭐️. They'
 ## Acknowledgments
 
 - [codingnomads](https://codingnomads.co/).
-
-
-
-
-
-
-
