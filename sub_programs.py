@@ -6,7 +6,7 @@ def player_name():
     """Collect user_name and welcome him/her to the game"""
     player = input("What's your name ? : ")
 
-    print(f"\nWelcome {player_name} to the:")
+    print(f"\nWelcome {player} to the:")
     print(
         '''
   ______   ______   .___  ___. .___  ___.      ___      .__   __.  _______  
@@ -54,7 +54,7 @@ def player_name():
 
 
 def door_choices():
-    print("There are two doors\n(1).Left door\n(2).Right door")
+    print("\nThere are two doors\n(1).Left door\n(2).Right door")
     door_choice = int(input("Make your choice: "))
 
     return door_choice
@@ -89,7 +89,7 @@ def option_further_left():
 
 def sword_found():
     """Sword found"""
-    print("\nYou have found a sword!\n(1).Take it\n(2). Leave it")
+    print("\nYou have found a sword!\n(1).Take it\n(2).Leave it")
     user_option = int(input("Make your choice: "))
     if user_option == 1:
         sword = 1

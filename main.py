@@ -26,10 +26,10 @@ def main():
                 further_option = option_further_right()
                 if further_option == 1:
                     if sword == 1:
-                        print(f"You were born to win {user_name}, but to be a winner you must plan to win, prepare to win, and expect to win. congratulations!")
+                        print(f"\nYou were born to win {user_name},\nbut to be a winner you must plan to win, prepare to win, and expect to win.\ncongratulations!")
                     
                     elif sword == 0:
-                        print(f"Sometimes by losing a battle,you find a new way to win the war. Rest in peace {user_name}. ")
+                        print(f"\nSometimes by losing a battle,you find a new way to win the war.\nRest in peace {user_name}. ")
                     return_previous_room = False
 
                 elif further_option == 2:
