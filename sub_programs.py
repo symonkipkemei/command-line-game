@@ -98,9 +98,9 @@ def sword_found():
     if user_option == 1:
         sword += 1
         if sword == 1:
-            print("\nYou have sword now, may you win the battle")
+            print("\nYou have sword now, may you win the battle.")
         elif sword >= 2:
-            print("You already have a sword in your hand, one sword is enough to win the battle. Good luck !")
+            print("\nYou already have a sword in your hand, one sword is enough to win the battle.\nGood luck!")
             sword = 1
         return sword
     elif user_option == 2:
