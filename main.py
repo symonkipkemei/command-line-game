@@ -3,9 +3,13 @@ from sub_programs import *
 
 
 def main():
+    # before the start of the game ,the sword is 0
     sword = 0
+    # introduction
     user = player_name()
     user_name = str.capitalize(user)
+
+    # game begins
     return_previous_room = True
     while return_previous_room:
         door_choice = door_choices()
@@ -26,7 +30,7 @@ def main():
                 further_option = option_further_right()
                 if further_option == 1:
                     if sword == 1:
-                        print(f"\nYou were born to win {user_name},\nbut to be a winner you must plan to win, prepare to win, and expect to win.\ncongratulations!")
+                        print(f"\nYou were born to win {user_name}, but to be a winner you must plan to win, prepare to win, and expect to win.\ncongratulations!")
                     
                     elif sword == 0:
                         print(f"\nSometimes by losing a battle,you find a new way to win the war.\nRest in peace {user_name}. ")

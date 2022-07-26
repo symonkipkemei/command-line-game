@@ -1,6 +1,5 @@
 import time
-#if the user happens to find the sword, assign variable to one
-sword = None
+
 
 def player_name():
     """Collect user_name and welcome him/her to the game"""
@@ -87,12 +86,22 @@ def option_further_left():
     elif user_option == 2:
         return
 
+
+#if the user happens to find the sword, assign variable to one
+sword = 0
+
 def sword_found():
     """Sword found"""
+    global sword
     print("\nYou have found a sword!\n(1).Take it\n(2).Leave it")
     user_option = int(input("Make your choice: "))
     if user_option == 1:
-        sword = 1
+        sword += 1
+        if sword == 1:
+            print("\nYou have sword now, may you win the battle")
+        elif sword >= 2:
+            print("You already have a sword in your hand, one sword is enough to win the battle. Good luck !")
+            sword = 1
         return sword
     elif user_option == 2:
         sword = 0
