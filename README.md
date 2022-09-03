@@ -58,9 +58,13 @@ To get this project up and running locally, you must already have python plus th
 
 <ILLUSTRATIONS>
 
-<h1 id="illus">Illustrations</h1>
+<h1 id="illus">Illustrations of the game play</h1>
 
-Images will be added later on
+![Image](illustrate/image0.png)
+![Image](illustrate/image1.png)
+![Image](illustrate/image2.png)
+
+
 
 
 <PROJECT-INFORMATION>

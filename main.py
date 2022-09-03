@@ -6,8 +6,7 @@ def main():
     # before the start of the game ,the sword is 0
     sword = 0
     # introduction
-    user = player_name()
-    user_name = str.capitalize(user)
+
 
     # game begins
     return_previous_room = True
