@@ -1,5 +1,9 @@
+   
+"""Parameters/Logic for the game,the thinniest ideas are organised in this directory"""
+
 import time
 
+#Common parameters: applies to all rooms
 
 def player_name() -> str:
     """Collect user_name and welcome him/her to the game
@@ -61,29 +65,21 @@ def player_name() -> str:
 
 
 def door_choices() -> int:
-    """Allows the player to make a choice between the available doors
+    """Allows the player to make a choice between the available doors, The doors are : left, right, front, back
 
     Returns:
         int: the key pair of the chosen door
     """
-    print("\nThere are two doors\n(1).Left door\n(2).Right door")
+    print("\nThere are two doors\n(1).Left door\n(2).Right door\n(3.)Front door\n(4.)Back door")
     door_choice = int(input("Make your choice: "))
 
     return door_choice
 
-def left_door():
-    """Game play at the left door
-    """
-    print("Oops! You've entered an empty room")
-
-def right_door():
-    """Gameplay at the right door
-    """
-    print("\nFireeeee! I am the dragon, I am going to eat you alive !!")
-    
 
 def option() -> int:
-    """After entering the right/left door. The player has an option of interacting further or returning to previous room
+    """After entering the right,left,front or back door. The player has two options:
+     1. interacting further
+     2. returning to previous room
 
     Returns:
         int: The key pair of the choice made by the player.
@@ -93,6 +89,38 @@ def option() -> int:
     user_option = int(input("Make your choice: "))
 
     return user_option
+
+
+
+
+# Left room parameters
+def left_door():
+    """Game play at the left door: The room is empty
+    """
+    print("Oops! You've entered an empty room")
+
+def option_further_left() -> int:
+    """After selecting Interacting further the user has two options:
+    1. look around 
+    2. run to previous room
+
+    Returns:
+        int: The key pair of the choice made by the player
+    """
+    print("\nYou have two options\n(1).Look around\n(2). Run to the previous room")
+    user_option = int(input("Make your choice: "))
+    if user_option == 1:
+        return user_option
+    elif user_option == 2:
+        pass
+
+
+# Right room parameters
+
+def right_door():
+    """Gameplay at the right door: There is a dragon
+    """
+    print("\nFireeeee! I am the dragon, I am going to eat you alive !!")
 
 def option_further_right() -> int:
     """After selecting interacting further, the player has two options in the right room,fight or escape the room
@@ -105,19 +133,15 @@ def option_further_right() -> int:
     user_option = int(input("Make your choice: "))
     return user_option
 
-def option_further_left() -> int:
-    """After selecting Interacting further the user has two options, look around or run to previous room
+# Front room parameters
 
-    Returns:
-        int: The key pair of the choice made by the player
+def front_door():
+    """ Game play in front door : The door is locked"""  
+
+# Back room parameters
+def back_door():
+    """Game play in back door: There is a chimpanzee
     """
-    print("\nYou have two options\n(1).Look around\n(2). Run to the previous room")
-    user_option = int(input("Make your choice: "))
-    if user_option == 1:
-        return user_option
-    elif user_option == 2:
-        return user_option
-
 
 #if the user happens to find the sword, assign variable to one
 sword = 0
