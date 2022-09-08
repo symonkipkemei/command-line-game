@@ -1,5 +1,5 @@
    
-"""Parameters/Logic for the game,the thinniest ideas are organised in this directory"""
+"""Parameters/Logic for the game,the thinniest/repetitive ideas are organised in this directory"""
 
 import time
 import csv
@@ -21,53 +21,35 @@ def player_name() -> str:
     """
 
     # The name of the player
-    player = str.capitalize(input("What's your name ? : "))
+    player = input("What's your name ? : ")
+    player = str.capitalize(player)
   
     #The welcome message
+    print("________________________________")
+    print("(◕‿◕)THE CAVES OF KAPKOLE(◕‿◕)")
+    print("________________________________")
+    print(f"""Hello {player},
+The king of Kapkole Kingdom has lost her daughter 
+in the caves with dungeons and dragons (~_~).
+Fortunately, she is still alive.
+Your instinctual responsibility as a warrior is to save her.
+________________________________
+      """)
 
-    print(f"\nWelcome {player} to the:")
-    print(
-        '''
-  ______   ______   .___  ___. .___  ___.      ___      .__   __.  _______  
- /      | /  __  \  |   \/   | |   \/   |     /   \     |  \ |  | |       \ 
-|  ,----'|  |  |  | |  \  /  | |  \  /  |    /  ^  \    |   \|  | |  .--.  |
-|  |     |  |  |  | |  |\/|  | |  |\/|  |   /  /_\  \   |  . `  | |  |  |  |
-|  `----.|  `--'  | |  |  |  | |  |  |  |  /  _____  \  |  |\   | |  '--'  |
- \______| \______/  |__|  |__| |__|  |__| /__/     \__\ |__| \__| |_______/ 
-                                                        
-        
-        ''', end=" "
-    )
 
-    time.sleep(3)
+    time.sleep(10)
 
-    print(
-        '''
- __       __  .__   __.  _______ 
-|  |     |  | |  \ |  | |   ____|
-|  |     |  | |   \|  | |  |__   
-|  |     |  | |  . `  | |   __|  
-|  `----.|  | |  |\   | |  |____ 
-|_______||__| |__| \__| |_______|
-                                  
-        ''', end=" "
-    )
 
-    time.sleep(3)
-
-    print(
-        '''
-  _______      ___      .___  ___.  _______ 
- /  _____|    /   \     |   \/   | |   ____|
-|  |  __     /  ^  \    |  \  /  | |  |__   
-|  | |_ |   /  /_\  \   |  |\/|  | |   __|  
-|  |__| |  /  _____  \  |  |  |  | |  |____ 
- \______| /__/     \__\ |__|  |__| |_______|
-                                            
-        '''
-    )
-
-    print("There is no way back, You either win! or you die !\n")
+    print("\n________________________________")
+    print("""There are four dungeons, with four doors.
+Your mission is to rescue the princess
+You are allowed to scream,
+You are allowed to cry,
+But there is no way back.
+________________________________
+ """)
+    
+    time.sleep(10)
 
     return player
 
@@ -107,7 +89,6 @@ def record_inventory(file_path, item: str,item_no: int):
         
         for x in dd_list:
             inventory[x[0]] = x[1]
-        print(inventory)
 
     # change the inventory based on the item added
     for key,value in inventory.items():
@@ -143,14 +124,19 @@ def retrieve_inventory(file_path) -> dict:
     
     return inventory
 
-def clean_inventory(file_path):
+def clean_inventory(file_path, *args: str):
     """Clean the inventory before the game starts
 
     Args:
         file_path (csv): The path for the file storage
+        args (str): Items to be included in the inventory
     """
-    #reset items to 0
-    inventory = {"sword": 0, "key": 0, "gun":0, "mangoes": 0}
+    #append items to a dictionary
+    inventory = {}
+
+    for item in args:
+        inventory[item] = 0
+
 
     with open(file_path, "w") as f:
         obj = csv.writer(f)
@@ -200,7 +186,7 @@ def item_found(item:str) -> int:
         user_option = int(input("Your choice: "))
         if user_option == 1:
             item_no += 1
-            print(f"\nYou now have a {item} in your collection! All the best in your search for the princess!")
+            print(f"\nYou now have a {item} in your collection!\nAll the best in your search for the princess!")
             try_again = False
         elif user_option == 2:
             item_no += 0
@@ -225,7 +211,7 @@ def option_further(*args:str)-> int:
     """
     # organise the parameters obtained, organise into index,item and 
     options_dict = {}
-    default_option = "run to the previous room"
+    default_option = "Run to the previous room"
     for index, option in enumerate(args,1):
         options_dict[index] = option
 
@@ -257,4 +243,6 @@ def option_further(*args:str)-> int:
         else:
             print("Please insert a digit, try again: ")
     
+
+
 

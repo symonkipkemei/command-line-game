@@ -13,7 +13,7 @@ def gameplay_left_door(filepath, user_name = "player")-> bool:
     """
     return_previous_room = True
     # what's in the room
-    what_is_in_the_room(f"Oops {user_name}! You entred an empty room")
+    what_is_in_the_room(f"Oops {user_name}! You entered an empty room")
     user_option = option_to_interact()
     if user_option == 1:
         further_option = option_further("Look around")
@@ -36,34 +36,48 @@ def gameplay_right_door(filepath, user_name = "player")-> bool:
     """
 
     print("\nFireeeee! I am the dragon, I am going to eat you alive !!")
-
+    return_previous_room = True
     user_option = option_to_interact()
-
     if user_option == 1:
-        further_option = option_further("fight")
+        further_option = option_further("Fight")
         if further_option == 1:
             #check if the user has a sword
             record = retrieve_inventory(filepath)
+            count = 0
             for key, value in record.items():
                 if key == "sword" and int(value) > 0:
-                    print(f"\nYou were born to win {user_name}\ncongratulations the dragon is dead!")
+                    print(f"\nThe dragon is dead! Congratulations {user_name}")
+                    print("All the best in your search for the princess!")
                     # interact_further
                     option = option_further("Look beside the dragon", "Look behind the dragon")
                     if option == 1:
-                        item = "mangoes"
+                        item = "banana"
                          # There is a gun and a sword
                         item_no = item_found(item)
                         record_inventory(filepath, item,item_no)
+                        return_previous_room = True
                     elif option == 2:
                          # There is a gun and a sword
                         item = "gun"
                         item_no = item_found(item)
                         record_inventory(filepath, item, item_no)
+                        return_previous_room = True
                 else:
-                    print("Rest in peace , we live to fight another day")
+                    count += 1
+            if count >= 4:
+                print(f"\nIt was dearing of you to fight with your bear hands.\nRest in Peace {user_name}\n")
+                return_previous_room = False
 
+                
         elif further_option == 2:
             return_previous_room = True
+
+
+    elif user_option == 2:
+        return_previous_room = True
+
+    return return_previous_room
+
 
 def gameplay_back_door(filepath, user_name = "player")-> bool:
     """Game play :There is a chimpanzee with a key, to get the key, you must feed it or kill it
@@ -74,9 +88,9 @@ def gameplay_back_door(filepath, user_name = "player")-> bool:
     Returns:
         bool: Return to the previous room (central pavillion), if not the game ends
     """
-    print("\n Auu! Auu!, I am a chimpanzee, this is my territory!! , what do you want?")
-    
-    user_option = option()
+    print("Auu! Auu!, I am a baboon, this is my territory!, what do you want?")
+    count = 0
+    user_option = option_to_interact()
     if user_option == 1:
         record = retrieve_inventory(filepath)
         further_option = option_further("Fight the baboon", "Feed the baboon")
@@ -84,14 +98,44 @@ def gameplay_back_door(filepath, user_name = "player")-> bool:
             # Gun needed to fight 
             for key, value in record.items():
                 if key == "gun" and int(value) > 0:
-                    print(f"\nYou were born to win {user_name}\ncongratulations the the baboon is dead!")
+                    print(f"\n Congratulations the the baboon is dead!")
+                    print("All the best in your search for the princess!")
                     # interact_further
                     option = option_further("Look beside the baboon")
                     if option == 1:
                        item_collected = "key"
                        item_no = item_found(item_collected)
                        record_inventory(filepath, item_collected, item_no)
+                else:
+                    count += 1
+            if count >= 4:
+                print(f"\nWinning isn’t everything, it’s the only thing.\nRest in Peace {user_name}\n")
+                return_previous_room = False
 
+        elif further_option == 2:
+            #feed the baboon
+            for key, value in record.items():
+                if key == "key" and int(value) > 0:
+                    print(f"\n Congratulations the the baboon is a sleep!")
+                    print("All the best in your search for the princess!")
+                    #interact further
+                    option = option_further("Look beside the baboon")
+                    if option == 1:
+                       item_collected = "key"
+                       item_no = item_found(item_collected)
+                       record_inventory(filepath, item_collected, item_no)
+                       return_previous_room = True
+                    elif option ==2:
+                        return_previous_room = True
+            else:
+                count += 1
+        if count >= 4:
+            print(f"\nWinning isn\’t everything, it’s the only thing.\nRest in Peace {user_name}\n")
+            return_previous_room = False
+
+    
+
+    
 def gameplay_front_door(filepath, user_name = "player")-> bool:
     """Game play: There is a princess , locked in this room. You need a key to rescue her.
 
@@ -104,12 +148,27 @@ def gameplay_front_door(filepath, user_name = "player")-> bool:
 
     record = retrieve_inventory(filepath)
 
+    #determine the total number of item options in the inventory
+    total_count = 0
+    for item in record.keys():
+        total_count += 1
+
+    # count
+    count = 0
+
     for key, value in record.items():
         if key == "key" and int(value) > 0:
             print(f"Congratulations {user_name}, you've just rescued the king's daughter!")
             return False
         else:
-            print(f"\n Ooops!,{user_name} The door appears to be closed, you need to find the key")
+            count += 1
+            
+    if count >= total_count:
+        print(f"Ooops {user_name}!\nThe door appears closed,\nyou need to find the key\nAll the best in your search for the princess!")
+        return_previous_room = True
+
+    return return_previous_room
+    
 
     
 def main():
@@ -118,11 +177,12 @@ def main():
     """
 
     # reset the inventory
+    
     filepath = "user_items.csv"
-    clean_inventory(filepath)
+    clean_inventory(filepath, "sword","key","gun","banana")
 
     # introduction
-    name = "symon"
+    name = player_name()
 
     # Game begins, no way out unless you rescue the girl or you are defeated
     return_previous_room = True
@@ -139,7 +199,6 @@ def main():
         else:
             print("Wrong input, try again")
 
-    
 
 
 main()
