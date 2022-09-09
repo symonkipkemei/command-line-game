@@ -29,27 +29,25 @@ def player_name() -> str:
     print("(◕‿◕)THE CAVES OF KAPKOLE(◕‿◕)")
     print("________________________________")
     print(f"""Hello {player},
-The king of Kapkole Kingdom has lost her daughter 
-in the caves with dungeons and dragons (~_~).
+The princess of Kapkole Kingdom is stuck in
+the caves with dungeons and dragons (~_~).
 Fortunately, she is still alive.
-Your instinctual responsibility as a warrior is to save her.
 ________________________________
       """)
 
 
-    time.sleep(10)
+    time.sleep(5)
 
 
     print("\n________________________________")
-    print("""There are four dungeons, with four doors.
-Your mission is to rescue the princess
-You are allowed to scream,
-You are allowed to cry,
-But there is no way back.
+    print("""There are four dungeons with four doors.
+The princess is stuck in one.
+Do you have what it takes to save her?
+All the best warrior!
 ________________________________
  """)
     
-    time.sleep(10)
+    time.sleep(5)
 
     return player
 
@@ -63,7 +61,7 @@ def door_choices() -> int:
     Returns:
         int: the key pair of the chosen door
     """
-    print("\nThere are four doors\n*********************\n(1).Left door\n(2).Right door\n(3).Front door\n(4).Back door\n*********************")
+    print("\nThere are four doors\n_____________________\n(1).Left door\n(2).Right door\n(3).Front door\n(4).Back door\n_____________________")
     door_choice = int(input("Make your choice:"))
     print("\n")
 
@@ -71,40 +69,6 @@ def door_choices() -> int:
     return door_choice
 
 # data storage,retrieving and cleaning
-def record_inventory(file_path, item: str,item_no: int):
-    """Records the collected item and the item number into a persistent memory(csv).
-
-    Args:
-        item (str): The name of the collected item;
-        item_no(int): The number of items collected
-
-    Returns:
-        None: None
-    """
-    #retrieve information from stored media
-    inventory = {}
-    with open(file_path, "r") as f:
-        read_obj = csv.reader(f)
-        dd_list = list(read_obj)
-        
-        for x in dd_list:
-            inventory[x[0]] = x[1]
-
-    # change the inventory based on the item added
-    for key,value in inventory.items():
-        if key == item:
-            inventory[key] = int(value) + item_no
-        
-    #save the changes back to the csv file
-    with open(file_path, "w") as f:
-        obj = csv.writer(f)
-        dd_list = []
-        for key, value in inventory.items():
-            data = [key, value]
-            dd_list.append(data)
-        
-        obj.writerows(dd_list)
-            
 def retrieve_inventory(file_path) -> dict:
     """Opens a csv file, reads information and abstract data to a dictionary
 
@@ -147,6 +111,97 @@ def clean_inventory(file_path, *args: str):
         
         obj.writerows(dd_list)
 
+def item_found(found_item:str,file_path) -> int:
+    """After Looking around, the player spots an item, he/she has an option to take it or leave it. The item can be:
+    1. sword
+    2. key
+    3. gun
+    4. mangoes
+
+    Args:
+        item (str): The name of the item
+        file_path(dict): The path to the persistent memory
+
+    Returns:
+        int: The number of items picked by the player
+    """
+
+    
+    # Determine the number of items already in collection
+    #_______________________________________________________________________________________
+    inventory = {}
+
+    with open(file_path, "r") as f:
+        obj_reader = csv.reader(f)
+        dd_list = obj_reader
+        for item in dd_list:
+            inventory[item[0]] = item[1]
+
+    for key, value in inventory.items():
+        if key == found_item:
+            items_in_collection = value
+            
+    items_in_collection = int(items_in_collection)
+    
+
+    # let the user decide if he wants to pick the item found
+    #_______________________________________________________________________________________
+
+    try_again = True
+    while try_again:
+        print(f"\nYou have found a {found_item}!")
+        print("****************")
+        print("(1).Take it\n(2).Leave it")
+        print("****************")
+        user_option = int(input("Your choice: "))
+        if user_option == 1:
+            total_items = items_in_collection + 1
+            print(f"\nYou have {total_items} {found_item}(s) in your collection!\nAll the best in your search for the princess!")
+            try_again = False
+        elif user_option == 2:
+            total_items = items_in_collection + 0
+            print(f"\nYou have {total_items} {found_item}(s) in your collection!\nAll the best in your search for the princess!")
+            try_again = False
+        else:
+             print("Wrong input, try again")
+
+    # store the picked item
+    #_______________________________________________________________________________________
+
+    # update the inventory with new values
+    
+    for key,value in inventory.items():
+        if key == found_item:
+            inventory[key] = total_items
+
+        
+    #save the changes back to the csv file
+    with open(file_path, "w") as f:
+        obj = csv.writer(f)
+        dd_list = []
+        for key, value in inventory.items():
+            data = [key, value]
+            dd_list.append(data)
+        
+        obj.writerows(dd_list)
+
+
+
+def total_item_options(inventory:dict) -> int:
+    """determine the total number of item options
+
+    Args:
+        inventory (dict): Data abstracted from the file storage
+    
+    Returns:
+        int: Number of item options
+    """
+    total_count = 0
+    for item in inventory.keys():
+        total_count += 1
+    return total_count
+
+   
 # options when playing the game, applies to all rooms
 
 def option_to_interact() -> int:
@@ -163,38 +218,7 @@ def option_to_interact() -> int:
 
     return option_user
 
-def item_found(item:str) -> int:
-    """After Looking around, the player spots an item, he/she has an option to take it or leave it. The item can be:
-    1. sword
-    2. key
-    3. gun
-    4. mangoes
 
-    Args:
-        item (str): The name of the item
-
-    Returns:
-        int: The number of items picked by the player
-    """
-    item_no = 0
-    try_again = True
-    while try_again:
-        print(f"\nYou have found a {str.capitalize(item)}!")
-        print("****************")
-        print("(1).Take it\n(2).Leave it")
-        print("****************")
-        user_option = int(input("Your choice: "))
-        if user_option == 1:
-            item_no += 1
-            print(f"\nYou now have a {item} in your collection!\nAll the best in your search for the princess!")
-            try_again = False
-        elif user_option == 2:
-            item_no += 0
-            try_again = False
-        else:
-             print("Wrong input, try again")
-    return item_no
-    
 def option_further(*args:str)-> int:
     """Organise the arguments obtained into index, option and display to the player:
     1. option 1: what happens?
