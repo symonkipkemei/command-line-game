@@ -62,7 +62,7 @@ def gameplay_right_door(filepath, user_name = "player")-> bool:
                 else:
                     count += 1
             if count >= total_count:
-                print(f"\nIt was daring of you to fight with your bear hands.\nRest in Peace {user_name}\n")
+                print(f"\nIt was daring of you to fight with your bear hands.\nRest in Peace {user_name}.\n")
                 return_previous_room = False
 
                 
@@ -174,28 +174,54 @@ def main():
     or will you be part of the statistics of the fallen soldiers!
     """
 
+
+    # play-again
     # reset the inventory
-    
     filepath = "user_items.csv"
     clean_inventory(filepath, "sword","key","gun","banana")
 
     # introduction
     name = player_name()
+        
+    play_again = True
+    while play_again:
+        # Game begins, no way out unless you rescue the girl or you are defeated
+        return_previous_room = True
+        while return_previous_room:
+            door_choice = door_choices()
+            if door_choice == 1:
+                return_previous_room = gameplay_front_door(filepath,name)
+            elif door_choice == 2:
+                return_previous_room = gameplay_right_door(filepath,name)
+            elif door_choice == 3:
+                return_previous_room = gameplay_left_door(filepath,name)
+            elif door_choice == 4:
+                return_previous_room = gameplay_back_door(filepath,name)
+            elif door_choice == 5:
+                print("\n“There is no failure except in no longer trying.”― Elbert Hubbard.")
+                return_previous_room = False
+            elif door_choice == 6:
+                print("Insert a digit, try again: ")
+            else:
+                print("Wrong input, try again\n")
 
-    # Game begins, no way out unless you rescue the girl or you are defeated
-    return_previous_room = True
-    while return_previous_room:
-        door_choice = door_choices()
-        if door_choice == 1:
-            return_previous_room = gameplay_left_door(filepath,name)
-        elif door_choice == 2:
-            return_previous_room = gameplay_right_door(filepath,name)
-        elif door_choice == 3:
-            return_previous_room = gameplay_front_door(filepath,name)
-        elif door_choice == 4:
-            return_previous_room = gameplay_back_door(filepath,name)
-        else:
-            print("Wrong input, try again")
+        user_choice = input("\nDo you want to play again? (y/n):")
+        user_choice =str.lower(user_choice)
+        if user_choice == "y":
+            play_again = True
+        elif user_choice == "n":
+            print("""\n“Maybe there are times when one should welcome defeat, tell it to come right in and sit down.”
+― Iris Murdoch,""")
+            play_again = False
+
+        
+
+        
+
+
+
+
+    
 
 
 

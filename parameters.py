@@ -32,6 +32,8 @@ def player_name() -> str:
 The princess of Kapkole Kingdom is stuck in
 the caves with dungeons and dragons (~_~).
 Fortunately, she is still alive.
+You've been entrusted to find and 
+bring her home.
 ________________________________
       """)
 
@@ -40,33 +42,35 @@ ________________________________
 
 
     print("\n________________________________")
-    print("""There are four dungeons with four doors.
-The princess is stuck in one.
-Do you have what it takes to save her?
-All the best warrior!
+    print("""All the best in your search.
 ________________________________
  """)
     
-    time.sleep(5)
+    time.sleep(2)
 
     return player
 
 def door_choices() -> int:
     """Allows the player to make a choice between the available doors, The doors are : 
-    1. left
+    1. front
     2. right
-    3. front
+    3. left
     4. back
+    5. exit
 
     Returns:
         int: the key pair of the chosen door
     """
-    print("\nThere are four doors\n_____________________\n(1).Left door\n(2).Right door\n(3).Front door\n(4).Back door\n_____________________")
-    door_choice = int(input("Make your choice:"))
+    print("\nThere are five doors\n_____________________\n(1).Front door\n(2).Right door\n(3).Left door\n(4).Back door\n(5).Exit door\n_____________________")
+    door_choice = input("Make your choice:")
     print("\n")
-
-
+    if door_choice.isdigit():
+            door_choice = int(door_choice)
+    else:
+        door_choice = 6
     return door_choice
+        
+    
 
 # data storage,retrieving and cleaning
 def retrieve_inventory(file_path) -> dict:
