@@ -1,5 +1,10 @@
-
+import csv
+import random
 from parameters import *
+
+arsenal_no = 1
+multiplier = random.randrange(1,2)
+arsenal_no = arsenal_no  * multiplier
 
 
 def gameplay_left_door(filepath, user_name = "player")-> bool:
@@ -35,6 +40,7 @@ def gameplay_right_door(filepath, user_name = "player")-> bool:
     """
 
     print("\nFireeeee! I am the dragon, I am going to eat you alive !!")
+    print("Tip**You need a weapon in your arsenal to fight the dragon**")
     return_previous_room = True
     user_option = option_to_interact()
     if user_option == 1:
@@ -46,7 +52,7 @@ def gameplay_right_door(filepath, user_name = "player")-> bool:
             
             count = 0
             for key, value in record.items():
-                if key == "sword" and int(value) > 0:
+                if key == "sword" and int(value) >= arsenal_no:
                     print(f"\nThe dragon is dead! Congratulations {user_name}")
                     print("All the best in your search for the princess!")
                     # interact_further
@@ -86,6 +92,7 @@ def gameplay_back_door(filepath, user_name = "player")-> bool:
         bool: Return to the previous room (central pavillion), if not the game ends
     """
     print("Auu! Auu!, I am a baboon, this is my territory!, what do you want?")
+    print("Tip**You need a weapon in your arsenal to fight the baboon or food to feed it.**")
     count = 0
     user_option = option_to_interact()
     return_previous_room = True
@@ -96,7 +103,7 @@ def gameplay_back_door(filepath, user_name = "player")-> bool:
         if further_option == 1:
             # Gun needed to fight 
             for key, value in record.items():
-                if key == "gun" and int(value) > 0:
+                if key == "gun" and int(value) == arsenal_no:
                     print(f"\n Congratulations the the baboon is dead!")
                     print("All the best in your search for the princess!")
                     # interact_further
@@ -109,14 +116,14 @@ def gameplay_back_door(filepath, user_name = "player")-> bool:
                 else:
                     count += 1
             if count >= total_count:
-                print(f"\nWinning isn’t everything, it’s the only thing.\nRest in Peace {user_name}\n")
+                print(f"\nWinning isn’t everything, it’s the only thing.\nRest in Peace {user_name}\n The baboon beat you thoroughly\n")
                 return_previous_room = False
 
         elif further_option == 2:
             #feed the baboon
             for key, value in record.items():
-                if key == "key" and int(value) > 0:
-                    print(f"\n Congratulations the the baboon is a sleep!")
+                if key == "banana" and int(value) >= arsenal_no:
+                    print(f"\nCongratulations the the baboon is satiated and sleepy!")
                     print("All the best in your search for the princess!")
                     #interact further
                     option = option_further("Look beside the baboon")
@@ -125,11 +132,11 @@ def gameplay_back_door(filepath, user_name = "player")-> bool:
                        return_previous_room = True
                     elif option ==2:
                         return_previous_room = True
-            else:
-                count += 1
-
+                else:
+                    count += 1
+            #To prevent typing several times
             if count >= total_count:
-                print(f"\nWinning isn\’t everything, it’s the only thing.\nRest in Peace {user_name}\n")
+                print(f"\nWinning isn\’t everything, it’s the only thing.\nRest in Peace {user_name}\nThe baboon beat you thoroughly.\nNext time carry food for the baboon.")
                 return_previous_room = False
 
         elif further_option == 3:
@@ -155,7 +162,7 @@ def gameplay_front_door(filepath, user_name = "player")-> bool:
     # count
     count = 0
     for key, value in record.items():
-        if key == "key" and int(value) > 0:
+        if key == "key" and int(value) >= arsenal_no:
             print(f"Congratulations {user_name}, you've just rescued the king's daughter!")
             return False
         else:
@@ -185,18 +192,24 @@ def main():
         
     play_again = True
     while play_again:
+        # state the state of the inventory
+        read_inventory()
         # Game begins, no way out unless you rescue the girl or you are defeated
         return_previous_room = True
         while return_previous_room:
             door_choice = door_choices()
             if door_choice == 1:
                 return_previous_room = gameplay_front_door(filepath,name)
+                read_inventory()
             elif door_choice == 2:
                 return_previous_room = gameplay_right_door(filepath,name)
+                read_inventory()
             elif door_choice == 3:
                 return_previous_room = gameplay_left_door(filepath,name)
+                read_inventory()
             elif door_choice == 4:
                 return_previous_room = gameplay_back_door(filepath,name)
+                read_inventory()
             elif door_choice == 5:
                 print("\n“There is no failure except in no longer trying.”― Elbert Hubbard.")
                 return_previous_room = False
@@ -208,23 +221,18 @@ def main():
         user_choice = input("\nDo you want to play again? (y/n):")
         user_choice =str.lower(user_choice)
         if user_choice == "y":
+            # clean the inventory if the user is to play again
+            clean_inventory(filepath, "sword","key","gun","banana")
             play_again = True
         elif user_choice == "n":
             print("""\n“Maybe there are times when one should welcome defeat, tell it to come right in and sit down.”
 ― Iris Murdoch,""")
             play_again = False
 
-        
 
-        
-
-
-
-
+if __name__ == "__main__":
+    main()
     
 
-
-
-main()
 
 

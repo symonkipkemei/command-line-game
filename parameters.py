@@ -272,5 +272,16 @@ def option_further(*args:str)-> int:
             print("Please insert a digit, try again: ")
     
 
+def read_inventory():
+    print()
+    print("Inventory status")
+    print("---------------------------------------------------------------")
+    mydict = {}
+    with open("user_items.csv", "r") as f:
+        reader = csv.reader(f)
+        dict_from_csv = {rows[0]:rows[1] for rows in reader}
+        print(dict_from_csv)
+    print("---------------------------------------------------------------")
+
 
 
