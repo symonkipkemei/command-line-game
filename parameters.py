@@ -1,18 +1,130 @@
-   
-"""Parameters/Logic for the game,the thinniest/repetitive ideas are organised in this directory"""
-
 import time
-import csv
+import random
+import requests
 
-#Common parameters: applies to the game
-def what_is_in_the_room(message:str):
-    """Display what is in the room
 
-    Args:
-        message (str): Message to the player
+
+class Opponent:
+    """Generate a game play when one enters a door with an opponent
     """
-    print(message)
 
+    def __init__(self,name, habitat, strength) -> None:
+        """create instance variables
+        """
+        self.name = name
+        self.habitat = habitat
+        self.strength = strength
+        
+
+class Hero:
+    "Generates a gameplay of the hero"
+
+    def __init__(self,name) -> None:
+        self.name = name
+        self.arsenal = {"sword":0, "key" : 0, "gun":0, "banana":0}
+
+    def collect(self, item):
+        print(f"\nYou have found a {item}!")
+        print("****************")
+        print("(1).Take it\n(2).Leave it")
+        print("****************")
+        user_option = int(input("Your choice: "))
+        if user_option == 1:
+                self.arsenal[item] += 1
+    def decollect(self):
+        for key,pair in self.arsenal.items():
+            self.arsenal[key] = 0
+
+    def attack(self, other):
+
+        #if the hero wins he has an option of collecting  inventory item
+
+        options = [self.name, other.name]
+        choice = random.choice(options) 
+        # emojis to display a fight
+      
+        if choice  == self.name:
+            print(f"Congratulations {self.name},  won!")
+            collect = True
+        else:
+            print(f"{other.name} defeated you!")
+            print("🤕🤕🥵🤕🤕🤕")
+            collect = False
+        return collect
+
+
+#options that control the gameplay in Habita blueprint
+options = ["Fight","Collect","empty"]
+
+class Habitat:
+    "maps the environment of the play depending on the options"
+
+    def __init__(self,name,option) -> None:
+        self.name = name
+        self.option = option
+
+    def interact_with(self, Opponent,Hero):
+                    # allow user to select option between fighting an opponent, collecting , empty room , entering a locked room
+        # fighting
+        if self.option == options[0]:
+            print(f"You've found {Opponent.name} !")
+            print(f"\nOptions:\n**************\n(1).{options[0]} {Opponent.name}\n(2).Run to the previous room\n**************")
+            self.fight_option = int(input("Your choice: "))
+            if self.fight_option == 1:
+                hero_win = Hero.attack(Opponent)
+                if not hero_win:
+                    Hero.decollect()
+            elif self.fight_option == 2:
+                exit = True
+            else:
+                print("wrong input")
+
+        #collecting
+        elif self.option == options[1]:
+            # abstract collection from Hero's possible arsenals into a list
+            collections = [arsenal for arsenal in Hero.arsenal.keys()]
+            choice = random.choice(collections)
+
+            print(f"You've found {choice} !")
+            Hero.collect(choice)
+            
+
+        #empty room
+        elif self.option == options[2]:
+            print("You've entered an empty room")
+            
+            print(f"\nOptions:\n**************\n(1).Run to the previous room\n**************")
+            self.further_option = int(input("Your choice: "))
+            if self.further_option == 1:
+                exit = True
+            else:
+                print("wrong input")
+    
+
+    def __str__(self) -> str:
+        return f"Welcome to the land of milk and war \nAt {self.name} we love vistors. Battles happen and sometime warriors die "
+
+# display door options available
+def door_choices(*args) -> int:
+    """Allows the player to make a choice between the available doors:
+    Returns:
+        int: the key pair of the chosen door
+    """
+    #easily retrieve door names using dictionaries keys
+    opt ={}
+    print("\nThere are five doors")
+    for index, x in enumerate(args, 1):
+        opt[index] = x
+        print(f"{index}. {x}")
+    door_choice = input("\nMake your choice:")
+    print("\n")
+    if door_choice.isdigit():
+            door_choice = int(door_choice)
+    else:
+        print("the option is not available,try again")
+    return opt[door_choice]
+
+# welcoming the user
 def player_name() -> str:
     """Collect user_name and welcome him/her to the game
 
@@ -23,6 +135,11 @@ def player_name() -> str:
     # The name of the player
     player = input("What's your name ? : ")
     player = str.capitalize(player)
+
+    # give the player a new name from API
+
+
+    
   
     #The welcome message
     print("________________________________")
@@ -50,238 +167,78 @@ ________________________________
 
     return player
 
-def door_choices() -> int:
-    """Allows the player to make a choice between the available doors, The doors are : 
-    1. front
-    2. right
-    3. left
-    4. back
-    5. exit
 
-    Returns:
-        int: the key pair of the chosen door
-    """
-    print("\nThere are five doors\n_____________________\n(1).Front door\n(2).Right door\n(3).Left door\n(4).Back door\n(5).Exit door\n_____________________")
-    door_choice = input("Make your choice:")
-    print("\n")
-    if door_choice.isdigit():
-            door_choice = int(door_choice)
-    else:
-        door_choice = 6
-    return door_choice
-        
-    
-
-# data storage,retrieving and cleaning
-def retrieve_inventory(file_path) -> dict:
-    """Opens a csv file, reads information and abstract data to a dictionary
-
-    Args:
-        file_path (csv): Opens a csv file
-
-    Returns:
-        dict: dictionary containing all the game inventory items
-    """
-    inventory = {}
-
-    with open(file_path, "r") as f:
-        obj_reader = csv.reader(f)
-        dd_list = obj_reader
-        for item in dd_list:
-            inventory[item[0]] = item[1]
-    
-    return inventory
-
-def clean_inventory(file_path, *args: str):
-    """Clean the inventory before the game starts
-
-    Args:
-        file_path (csv): The path for the file storage
-        args (str): Items to be included in the inventory
-    """
-    #append items to a dictionary
-    inventory = {}
-
-    for item in args:
-        inventory[item] = 0
-
-
-    with open(file_path, "w") as f:
-        obj = csv.writer(f)
-        dd_list = []
-        for key, value in inventory.items():
-            data = [key, value]
-            dd_list.append(data)
-        
-        obj.writerows(dd_list)
-
-def item_found(found_item:str,file_path) -> int:
-    """After Looking around, the player spots an item, he/she has an option to take it or leave it. The item can be:
-    1. sword
-    2. key
-    3. gun
-    4. mangoes
-
-    Args:
-        item (str): The name of the item
-        file_path(dict): The path to the persistent memory
-
-    Returns:
-        int: The number of items picked by the player
+def main():
+    """The game is about finding a lost princess within the dungeons of the dragons. The princess is locked in one of the rooms! Will you be the hero! 
+    or will you be part of the statistics of the fallen soldiers!
     """
 
-    
-    # Determine the number of items already in collection
-    #_______________________________________________________________________________________
-    inventory = {}
+    # creating objects
+    #__________________________________________________________________
+    #Hero
+    warrior = Hero("symon")
 
-    with open(file_path, "r") as f:
-        obj_reader = csv.reader(f)
-        dd_list = obj_reader
-        for item in dd_list:
-            inventory[item[0]] = item[1]
+    #habitats
+    # each environment is characterised by different options (fight, collect or an empty room)
+    front_door = Habitat("Namibia",option=options[0])
+    right_door = Habitat("Bostwana",option=options[1])
+    left_door = Habitat("Malawi",option=options[2])
+    back_door = Habitat("Kenya",option=options[0])
+    exit_door = Habitat("Exit",option=options[0])
 
-    for key, value in inventory.items():
-        if key == found_item:
-            items_in_collection = value
-            
-    items_in_collection = int(items_in_collection)
-    
+    #opponents
+    black_panther = Opponent("Black panther","On land",5)
+    gorilla =Opponent("gorilla","forest",4)
+    prey_mantis =Opponent("Prey Mantis","trees",3)
 
-    # let the user decide if he wants to pick the item found
-    #_______________________________________________________________________________________
-
-    try_again = True
-    while try_again:
-        print(f"\nYou have found a {found_item}!")
-        print("****************")
-        print("(1).Take it\n(2).Leave it")
-        print("****************")
-        user_option = int(input("Your choice: "))
-        if user_option == 1:
-            total_items = items_in_collection + 1
-            print(f"\nYou have {total_items} {found_item}(s) in your collection!\nAll the best in your search for the princess!")
-            try_again = False
-        elif user_option == 2:
-            total_items = items_in_collection + 0
-            print(f"\nYou have {total_items} {found_item}(s) in your collection!\nAll the best in your search for the princess!")
-            try_again = False
-        else:
-             print("Wrong input, try again")
-
-    # store the picked item
-    #_______________________________________________________________________________________
-
-    # update the inventory with new values
-    
-    for key,value in inventory.items():
-        if key == found_item:
-            inventory[key] = total_items
-
-        
-    #save the changes back to the csv file
-    with open(file_path, "w") as f:
-        obj = csv.writer(f)
-        dd_list = []
-        for key, value in inventory.items():
-            data = [key, value]
-            dd_list.append(data)
-        
-        obj.writerows(dd_list)
+    #__________________________________________________________________
 
 
+    # welcome the user to the game
+    player_name()
 
-def total_item_options(inventory:dict) -> int:
-    """determine the total number of item options
+  
+    play_again = True
+    while play_again:
+        # state the state of the inventory
+        print(warrior.arsenal)
+        # Game begins, no way out unless you rescue the girl or you are defeated
+        return_previous_room = True
+        while return_previous_room:
+            # display the door choices
+            selection = door_choices(front_door.name,right_door.name,left_door.name,back_door.name,exit_door.name)
+            if selection == front_door.name:
+                front_door.interact_with(black_panther,warrior)
 
-    Args:
-        inventory (dict): Data abstracted from the file storage
-    
-    Returns:
-        int: Number of item options
-    """
-    total_count = 0
-    for item in inventory.keys():
-        total_count += 1
-    return total_count
+            elif selection == right_door.name:
+                right_door.interact_with(gorilla,warrior)
 
-   
-# options when playing the game, applies to all rooms
+            elif selection == left_door.name:
+                left_door.interact_with(prey_mantis,warrior)
 
-def option_to_interact() -> int:
-    """After entering the right,left,front or back door. The player has two options:
-     1. Interact further
-     2. Run to the previous room
+            elif selection == back_door.name:
+                back_door.interact_with(prey_mantis,warrior)
 
-    Returns:
-        int: The key pair of the choice made by the player.
-    """
-    
-    print("\nOptions:\n**************\n(1).Interact further\n(2).Run to the previous room\n**************")
-    option_user = int(input("Your choice: "))
+            elif selection == exit_door.name:
+                print("\n“There is no failure except in no longer trying.”― Elbert Hubbard.")
+                return_previous_room = False
 
-    return option_user
-
-
-def option_further(*args:str)-> int:
-    """Organise the arguments obtained into index, option and display to the player:
-    1. option 1: what happens?
-    2. option 2: what happens?
-    3. option 3: ..........(continues)
-    4. run to previous room (default)
-
-    Args:
-        args (str): Options for the gameplay
-
-    Returns:
-        int: The key pair of the choice made by the user.
-        None: when the player selects:run to the previous room.
-    """
-    # organise the parameters obtained, organise into index,item and 
-    options_dict = {}
-    default_option = "Run to the previous room"
-    for index, option in enumerate(args,1):
-        options_dict[index] = option
-
-    last_item = index + 1
-    options_dict[last_item] = default_option
-
-    try_again = True
-    while try_again:
-        # display to the user
-        print("\nOptions: ")
-        print("****************")
-        for key, value in options_dict.items():
-            print(f"({key}). {value}")
-        print("****************")
-        user_option = input("Your choice: ")
-
-        if user_option.isdigit():
-            user_option = int(user_option)
-            if user_option in options_dict.keys():
-                if user_option == last_item:
-                    try_again = False
-                    pass
-    
-                else:
-                    try_again = False
-                    return user_option
             else:
-                print("The option is not available, try again")
-        else:
-            print("Please insert a digit, try again: ")
+                print("Wrong input, try again\n")
+            
+            print()
+            print(warrior.arsenal)
+
+        user_choice = input("\nDo you want to play again? (y/n):")
+        user_choice =str.lower(user_choice)
+        if user_choice == "y":
+            play_again = True
+        elif user_choice == "n":
+            print("""\n“Maybe there are times when one should welcome defeat, tell it to come right in and sit down.”
+― Iris Murdoch,""")
+            play_again = False
+
+
+if __name__ == "__main__":
+    main()
     
-
-def read_inventory():
-    print()
-    print("Inventory status")
-    print("---------------------------------------------------------------")
-    mydict = {}
-    with open("user_items.csv", "r") as f:
-        reader = csv.reader(f)
-        dict_from_csv = {rows[0]:rows[1] for rows in reader}
-        print(dict_from_csv)
-    print("---------------------------------------------------------------")
-
-
-

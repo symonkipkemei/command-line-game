@@ -1,0 +1,4 @@
+print("🤕")
+wounded = "🤕"
+
+print(wounded)
