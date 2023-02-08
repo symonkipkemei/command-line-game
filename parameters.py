@@ -126,10 +126,10 @@ def door_choices(*args) -> int:
 
 # welcoming the user
 def player_name() -> str:
-    """Collect user_name and welcome him/her to the game
+    """Collect user_name and welcome him/her to the game, assign the player a random name from the api
 
     Returns:
-        str: player name
+        str: name from the api
     """
 
     # The name of the player
@@ -137,6 +137,13 @@ def player_name() -> str:
     player = str.capitalize(player)
 
     # give the player a new name from API
+    max_len = 5
+    min_len = 2
+    base_url = f"https://uzby.com/api.php?min={min_len}&max={max_len}"
+
+    response = requests.get(base_url)
+
+    print( f" Hello {player}, your warrior name for the gameplay would be{response} ")
 
 
     
@@ -165,7 +172,7 @@ ________________________________
     
     time.sleep(2)
 
-    return player
+    return response
 
 
 def main():
