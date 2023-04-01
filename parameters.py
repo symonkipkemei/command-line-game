@@ -1,6 +1,6 @@
    
 """Parameters/Logic for the game,the thinniest/repetitive ideas are organised in this directory"""
-
+import requests
 import time
 import csv
 
@@ -22,7 +22,12 @@ def player_name() -> str:
 
     # The name of the player
     player = input("What's your name ? : ")
+    player_name_length = len(player_name)
     player = str.capitalize(player)
+
+
+    endpoint = "https://api.fungenerators.com"
+    response = requests.get(endpoint)
   
     #The welcome message
     print("________________________________")
@@ -282,6 +287,4 @@ def read_inventory():
         dict_from_csv = {rows[0]:rows[1] for rows in reader}
         print(dict_from_csv)
     print("---------------------------------------------------------------")
-
-
 
