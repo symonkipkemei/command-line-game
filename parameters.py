@@ -23,89 +23,68 @@ class Hero:
         self.name = name
         self.arsenal = {"sword":0, "key" : 0, "gun":0, "banana":0}
 
-    def collect(self, item):
-        print(f"\nYou have found a {item}!")
+    def collect(self):
+        """Allow the player to randomly select an item from the possible arsenals
+        """
+        # abstract collection from Hero's possible arsenals into a list
+        collections = [arsenal for arsenal in self.arsenal.keys()]
+        #randomly select an item from the dictionary
+        choice = random.choice(collections)
+
+
+        #display to the user
+        print(f"\nYou have found a {choice}!")
         print("****************")
         print("(1).Take it\n(2).Leave it")
         print("****************")
         user_option = int(input("Your choice: "))
         if user_option == 1:
-                self.arsenal[item] += 1
+                self.arsenal[choice] += 1
+
     def decollect(self):
-        for key,pair in self.arsenal.items():
+        "decollect all the arsenal whenver the player is defeated"
+        for key in self.arsenal.keys():
             self.arsenal[key] = 0
 
     def attack(self, other):
-
-        #if the hero wins he has an option of collecting  inventory item
-
-        options = [self.name, other.name]
-        choice = random.choice(options) 
-        # emojis to display a fight
-      
-        if choice  == self.name:
-            print(f"Congratulations {self.name},  won!")
-            collect = True
-        else:
-            print(f"{other.name} defeated you!")
-            print("🤕🤕🥵🤕🤕🤕")
-            collect = False
-        return collect
-
-
-#options that control the gameplay in Habita blueprint
-options = ["Fight","Collect","empty"]
-
-class Habitat:
-    "maps the environment of the play depending on the options"
-
-    def __init__(self,name,option) -> None:
-        self.name = name
-        self.option = option
-
-    def interact_with(self, Opponent,Hero):
-                    # allow user to select option between fighting an opponent, collecting , empty room , entering a locked room
-        # fighting
-        if self.option == options[0]:
-            print(f"You've found {Opponent.name} !")
-            print(f"\nOptions:\n**************\n(1).{options[0]} {Opponent.name}\n(2).Run to the previous room\n**************")
-            self.fight_option = int(input("Your choice: "))
-            if self.fight_option == 1:
-                hero_win = Hero.attack(Opponent)
-                if not hero_win:
-                    Hero.decollect()
-            elif self.fight_option == 2:
-                exit = True
-            else:
-                print("wrong input")
-
-        #collecting
-        elif self.option == options[1]:
-            # abstract collection from Hero's possible arsenals into a list
-            collections = [arsenal for arsenal in Hero.arsenal.keys()]
-            choice = random.choice(collections)
-
-            print(f"You've found {choice} !")
-            Hero.collect(choice)
+        # roll dice to detrmine the winner between self and other opponent
+        try_again = True
+        while try_again:
             
+            #possible outcomes
+            ansA = random.randint(1,6)
+            ansB = random.randint(1,6)
 
-        #empty room
-        elif self.option == options[2]:
-            print("You've entered an empty room")
-            
-            print(f"\nOptions:\n**************\n(1).Run to the previous room\n**************")
-            self.further_option = int(input("Your choice: "))
-            if self.further_option == 1:
-                exit = True
-            else:
-                print("wrong input")
+            print(f"{self.name} rolls dice; outcome: {ansA}")
+            print(f"{other.name} rolls dice; outcome: {ansB}")
+
+
     
+            if ansA  > ansB:
+                winner = self.name
+                loser = other.name
+                try_again = False
+                # the hero indeed becomes an hero
+                hero = True
+            elif  ansB == ansA:
+                print(f"\n{self.name} tied with {other.name}, redoing the roll\n")
+                time.sleep(3)
+                print("....................")
+                try_again = True
+            else:
+                winner = other.name
+                loser = self.name
+                try_again = False
+                # the hero is defeated
+                hero = False
 
-    def __str__(self) -> str:
-        return f"Welcome to the land of milk and war \nAt {self.name} we love vistors. Battles happen and sometime warriors die "
+        print(f"\nCongratulations {winner},you defeated {loser}🤕🤕🥵🤕🤕🤕 !")
 
+        return hero
+
+ 
 # display door options available
-def door_choices(*args) -> int:
+def door_choices(doors:dict) -> int:
     """Allows the player to make a choice between the available doors:
     Returns:
         int: the key pair of the chosen door
@@ -113,7 +92,7 @@ def door_choices(*args) -> int:
     #easily retrieve door names using dictionaries keys
     opt ={}
     print("\nThere are five doors")
-    for index, x in enumerate(args, 1):
+    for index, x in doors.items():
         opt[index] = x
         print(f"{index}. {x}")
     door_choice = input("\nMake your choice:")
@@ -137,13 +116,14 @@ def player_name() -> str:
     player = str.capitalize(player)
 
     # give the player a new name from API
-    max_len = 5
-    min_len = 2
+    max_len = 10
+    min_len = 5
     base_url = f"https://uzby.com/api.php?min={min_len}&max={max_len}"
 
     response = requests.get(base_url)
+    response = response.text
 
-    print( f" Hello {player}, your warrior name for the gameplay would be{response} ")
+    print( f"Hello {player}, your warrior name for the gameplay would be {response}\n")
 
 
     
@@ -152,7 +132,7 @@ def player_name() -> str:
     print("________________________________")
     print("(◕‿◕)THE CAVES OF KAPKOLE(◕‿◕)")
     print("________________________________")
-    print(f"""Hello {player},
+    print(f"""{response},
 The princess of Kapkole Kingdom is stuck in
 the caves with dungeons and dragons (~_~).
 Fortunately, she is still alive.
@@ -175,77 +155,7 @@ ________________________________
     return response
 
 
-def main():
-    """The game is about finding a lost princess within the dungeons of the dragons. The princess is locked in one of the rooms! Will you be the hero! 
-    or will you be part of the statistics of the fallen soldiers!
-    """
-
-    # creating objects
-    #__________________________________________________________________
-    #Hero
-    warrior = Hero("symon")
-
-    #habitats
-    # each environment is characterised by different options (fight, collect or an empty room)
-    front_door = Habitat("Namibia",option=options[0])
-    right_door = Habitat("Bostwana",option=options[1])
-    left_door = Habitat("Malawi",option=options[2])
-    back_door = Habitat("Kenya",option=options[0])
-    exit_door = Habitat("Exit",option=options[0])
-
-    #opponents
-    black_panther = Opponent("Black panther","On land",5)
-    gorilla =Opponent("gorilla","forest",4)
-    prey_mantis =Opponent("Prey Mantis","trees",3)
-
-    #__________________________________________________________________
-
-
-    # welcome the user to the game
-    player_name()
-
-  
-    play_again = True
-    while play_again:
-        # state the state of the inventory
-        print(warrior.arsenal)
-        # Game begins, no way out unless you rescue the girl or you are defeated
-        return_previous_room = True
-        while return_previous_room:
-            # display the door choices
-            selection = door_choices(front_door.name,right_door.name,left_door.name,back_door.name,exit_door.name)
-            if selection == front_door.name:
-                front_door.interact_with(black_panther,warrior)
-
-            elif selection == right_door.name:
-                right_door.interact_with(gorilla,warrior)
-
-            elif selection == left_door.name:
-                left_door.interact_with(prey_mantis,warrior)
-
-            elif selection == back_door.name:
-                back_door.interact_with(prey_mantis,warrior)
-
-            elif selection == exit_door.name:
-                print("\n“There is no failure except in no longer trying.”― Elbert Hubbard.")
-                return_previous_room = False
-
-            else:
-                print("Wrong input, try again\n")
-            
-            print()
-            print(warrior.arsenal)
-
-        user_choice = input("\nDo you want to play again? (y/n):")
-        user_choice =str.lower(user_choice)
-        if user_choice == "y":
-            play_again = True
-        elif user_choice == "n":
-            print("""\n“Maybe there are times when one should welcome defeat, tell it to come right in and sit down.”
-― Iris Murdoch,""")
-            play_again = False
-
 
 if __name__ == "__main__":
-    main()
-    
+    name = roll_dice("symon", "kipchumba")
+    print(name)

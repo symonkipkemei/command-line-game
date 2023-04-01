@@ -1,4 +1,0 @@
-print("🤕")
-wounded = "🤕"
-
-print(wounded)
